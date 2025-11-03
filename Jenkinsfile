@@ -21,7 +21,7 @@ pipeline {
     stage('Build Docker Image') {
       steps {
         sh '''
-          sudo docker build -t ${DOCKER_IMAGE} .
+          docker build -t ${DOCKER_IMAGE} .
         '''
       }
     }
@@ -30,7 +30,7 @@ pipeline {
       steps {
         sh '''
           if [ "$(docker ps -aq -f name=${CONTAINER_NAME})" ]; then
-            sudo docker rm -f ${CONTAINER_NAME} || true
+            docker rm -f ${CONTAINER_NAME} || true
           fi
         '''
       }
@@ -39,7 +39,7 @@ pipeline {
     stage('Run New Container') {
       steps {
         sh '''
-          sudo docker run -d --name ${CONTAINER_NAME} \
+          docker run -d --name ${CONTAINER_NAME} \
             -p ${HOST_PORT}:80 \
             ${DOCKER_IMAGE}
         '''
@@ -70,8 +70,8 @@ pipeline {
       echo "Deployed: http://localhost:${HOST_PORT}"
     }
     always {
-      sh 'sudo docker images | head -n 15 || true'
-      sh 'sudo docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Ports}}"'
+      sh 'docker images | head -n 15 || true'
+      sh 'docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Ports}}"'
     }
   }
 }
